@@ -10,6 +10,22 @@ import streamlit as st
 from PIL import Image, ImageDraw, ImageFont
 import os
 
+
+
+def remove_black_background(img, threshold=30):
+    img = img.convert("RGBA")
+    datas = img.getdata()
+    new_data = []
+    for item in datas:
+        r, g, b, a = item
+        if r < threshold and g < threshold and b < threshold:
+            new_data.append((0, 0, 0, 0))  # Transparent
+        else:
+            new_data.append((r, g, b, a))
+    img.putdata(new_data)
+    return img
+
+
 st.set_page_config(layout="wide")
 
 # st.image("Hussein Hussein_Headshot_1.png", width=200,  caption="Sunrise by the mountains")
@@ -33,8 +49,18 @@ st.markdown(highlighted_text, unsafe_allow_html=True)
 
 
 # Load resonator images
-series_img = Image.open("images/Series_Resonator.png")
-shunt_img = Image.open("images/Shunt_Resonator.png")
+# series_img = Image.open("images/Series_Resonator.png")
+# shunt_img = Image.open("images/Shunt_Resonator.png")
+
+
+
+# Load and clean resonator images
+series_img_path = os.path.join("images", "Series_Resonator.jpg")
+shunt_img_path = os.path.join("images", "Shunt_Resonator.jpg")
+
+series_img = remove_black_background(Image.open(series_img_path))
+shunt_img = remove_black_background(Image.open(shunt_img_path))
+
 
 # Function to generate a schematic image
 def generate_schematic(start_with_series, num_resonators):
@@ -49,7 +75,7 @@ def generate_schematic(start_with_series, num_resonators):
         # Add label to image
         draw = ImageDraw.Draw(img)
         font = ImageFont.load_default()
-        draw.text((10, 10), label, fill="black", font=font)
+        draw.text((100, 100), label, fill="red", font=font)
         images.append(img)
 
     # Combine images horizontally
@@ -75,7 +101,7 @@ if st.button("Generate Circuit Schematics"):
     schematic_shunt.save("circuit_starting_with_shunt.png")
 
     # Display images
-    st.subheader("Circuit starting with Series Resonator")
+    st.subheader("starting with Series Resonator")
     st.image(schematic_series, use_container_width=True)
 
     st.subheader("Circuit starting with Shunt Resonator")
