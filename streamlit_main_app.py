@@ -10,7 +10,7 @@ import streamlit as st
 from PIL import Image, ImageDraw, ImageFont
 import os
 
-
+# final
 
 def remove_black_background(img, threshold=30):
     img = img.convert("RGBA")
