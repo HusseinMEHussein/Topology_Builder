@@ -295,10 +295,3 @@ with Main_col3:
 
     st.write("# Generated MF Table")
     st.table(styled_df)
-
-
-
-
-st.image("skyworks-solutions-inc-vector-logo.svg", width=200,  caption="")
-
-
